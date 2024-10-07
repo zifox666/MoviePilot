@@ -70,6 +70,8 @@ def start_tray():
 
 
 if __name__ == '__main__':
+    sys.path.append("D:/项目/MoviePilot/app/helper/sites.cp311-win_amd64.pyd")
+    sys.path.append("D:/项目/MoviePilot/app/helper/sites.cppython-311-darwin.so")
     # 启动托盘
     start_tray()
     # 初始化数据库

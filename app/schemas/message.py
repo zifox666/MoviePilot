@@ -94,6 +94,8 @@ class NotificationSwitch(BaseModel):
     vocechat: Optional[bool] = False
     # WebPush开关
     webpush: Optional[bool] = False
+    # onebot11开关
+    onebot11: Optional[bool] = False
 
 
 class Subscription(BaseModel):

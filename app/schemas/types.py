@@ -167,6 +167,7 @@ class MessageChannel(Enum):
     VoceChat = "VoceChat"
     Web = "Web"
     WebPush = "WebPush"
+    Onebot11 = "Onebot11"
 
 
 # 用户配置Key字典

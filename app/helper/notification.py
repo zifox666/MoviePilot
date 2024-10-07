@@ -20,7 +20,8 @@ class NotificationHelper(ServiceBaseHelper[NotificationConf]):
                 "VoceChatModule",
                 "TelegramModule",
                 "SynologyChatModule",
-                "SlackModule"
+                "SlackModule",
+                "Onebot11Module"
             ]
         )
 
@@ -95,3 +96,15 @@ class NotificationHelper(ServiceBaseHelper[NotificationConf]):
         if not service:
             service = self.get_service(name=name)
         return service.type == "slack" if service else False
+
+    def is_onebot11(self, service: Optional[ServiceInfo] = None, name: Optional[str] = None) -> bool:
+        """
+        判断指定的消息通知服务是否为 Onebot11 类型，需要传入 `service` 或 `name` 中的任一参数
+
+        :param service: 要判断的服务信息
+        :param name: 服务的名称
+        :return: 如果服务类型为 onebot11，返回 True；否则返回 False。
+        """
+        if not service:
+            service = self.get_service(name=name)
+        return service.type == "onebot11" if service else False
