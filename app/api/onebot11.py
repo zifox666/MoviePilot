@@ -37,3 +37,11 @@ async def get():
     }
 
 
+def get_ob11_websocket():
+    global onebot11_websocket
+    return onebot11_websocket
+
+
+def stop_ob11_websocket():
+    global onebot11_websocket
+    onebot11_websocket = None

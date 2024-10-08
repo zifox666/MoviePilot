@@ -4,7 +4,7 @@ from threading import Event
 
 from fastapi import WebSocket
 
-from app.api.onebot11 import onebot11_websocket
+from app.api.onebot11 import onebot11_websocket, get_ob11_websocket, stop_ob11_websocket
 from app.core.config import settings
 from app.core.context import MediaInfo, Context
 from app.core.metainfo import MetaInfo
@@ -16,26 +16,21 @@ from app.utils.string import StringUtils
 class Onebot11:
     _ds_url = f"http://127.0.0.1:{settings.PORT}/api/v1/message?token={settings.API_TOKEN}"
     _event = Event()
-    _ws = onebot11_websocket
 
     def __init__(self, OB11_USERS, OB11_GROUPS, **kwargs):
         """
         初始化参数
         """
-        if not onebot11_websocket:
-            logger.error("Onebot11配置不完整！")
-            return
-        # ws
-        self._ws = onebot11_websocket
         self._onebot11_users = OB11_USERS
         self._onebot11_groups = OB11_GROUPS
         self.name = kwargs.get('name')
 
-    def get_state(self) -> bool:
+    @staticmethod
+    def get_state() -> bool:
         """
         获取状态
         """
-        return self._ws is not None
+        return get_ob11_websocket()
 
     async def send_msg(self, title: str, text: str = "", image: str = "",
                        userid: str = "", link: str = None) -> Optional[bool]:
@@ -48,7 +43,7 @@ class Onebot11:
         :param link: 跳转链接
         :userid: 发送消息的目标用户ID，为空则发给管理员
         """
-        if not self._ws:
+        if not get_ob11_websocket():
             return False
 
         if not title and not text:
@@ -86,7 +81,7 @@ class Onebot11:
         """
         发送媒体列表消息
         """
-        if not self._ws:
+        if not get_ob11_websocket():
             return None
 
         try:
@@ -124,7 +119,7 @@ class Onebot11:
         """
         发送列表消息
         """
-        if not self._ws:
+        if not get_ob11_websocket():
             return None
 
         if not torrents:
@@ -184,7 +179,7 @@ class Onebot11:
         return True
 
     async def __send_private_message(self, userid: str, msg: str = ""):
-        await self._ws.send_json({
+        await get_ob11_websocket().send_json({
             "action": "send_private_msg",
             "params": {
                 "user_id": userid,
@@ -194,7 +189,7 @@ class Onebot11:
         })
 
     async def __send_group_message(self, group_id: str, msg: str = ""):
-        await self._ws.send_json({
+        await get_ob11_websocket().send_json({
             "action": "send_group_msg",
             "params": {
                 "user_id": group_id,
@@ -207,6 +202,6 @@ class Onebot11:
         """
         停止Onebot11消息接收服务
         """
-        if self._ws:
-            self._ws.close()
+        if get_ob11_websocket():
+            stop_ob11_websocket()
             logger.info("Onebot11消息接收服务已停止")
